@@ -1,7 +1,6 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import { env } from "@/lib/env.mjs";
+import { PrismaClient } from "@prisma/client";
 
-const client = postgres(env.DATABASE_URL);
-export const db = drizzle(client);
-
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+export const prisma = globalForPrisma.prisma ?? new PrismaClient();

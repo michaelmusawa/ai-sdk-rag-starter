@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Resource {
+  id        String   @id @default(nanoid())
+  content   String   @db.NVarChar(4000)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  embeddings Embedding[]
+
+  @@map("resources")
+}
+
+model Embedding {
+  id          String   @id @default(nanoid())
+  resourceId  String   @map("resource_id")
+  resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  content     String   @db.NVarChar(4000)
+  embedding   Bytes    @db.VarBinary(6144) // 1536 dimensions * 4 bytes
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([embedding])
+  @@map("embeddings")
+}

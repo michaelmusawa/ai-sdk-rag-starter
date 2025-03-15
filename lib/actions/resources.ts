@@ -1,24 +1,39 @@
-'use server';
+"use server";
 
-import {
-  NewResourceParams,
-  insertResourceSchema,
-  resources,
-} from '@/lib/db/schema/resources';
-import { db } from '../db';
+import { prisma } from "@/lib/db";
+import { nanoid } from "@/lib/utils";
+import { generateEmbeddings } from "../ai/embedding";
+import { embeddings as embeddingsTable } from "../db/schema/embeddings";
 
-export const createResource = async (input: NewResourceParams) => {
+export const createResource = async (input: any) => {
   try {
-    const { content } = insertResourceSchema.parse(input);
+    await prisma.resource.create({
+      data: {
+        id: nanoid(),
+        content: input.content,
+      },
+    });
 
-    const [resource] = await db
-      .insert(resources)
-      .values({ content })
-      .returning();
+    // const embeddings = await generateEmbeddings(content);
+    // await db.insert(embeddingsTable).values(
+    //   embeddings.map(embedding => ({
+    //     resourceId: resource.id,
+    //     ...embedding,
+    //   })),
+    // );
 
-    return 'Resource successfully created.';
+    const embeddings = await generateEmbeddings(input.content);
+
+    await prisma.resource.create({
+      data: {
+        id: nanoid(),
+        content: input.content,
+      },
+    });
+
+    return "Resource successfully created.";
   } catch (e) {
     if (e instanceof Error)
-      return e.message.length > 0 ? e.message : 'Error, please try again.';
+      return e.message.length > 0 ? e.message : "Error, please try again.";
   }
 };

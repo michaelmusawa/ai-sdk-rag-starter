@@ -1,26 +1,27 @@
 import { env } from "@/lib/env.mjs";
-  
-import { drizzle } from "drizzle-orm/postgres-js";
-import { migrate } from "drizzle-orm/postgres-js/migrator";
-import postgres from "postgres";
 
+import { prisma } from "@/lib/db";
 
 const runMigrate = async () => {
-  if (!env.DATABASE_URL) {
+  if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not defined");
   }
 
-  
-const connection = postgres(env.DATABASE_URL, { max: 1 });
-
-const db = drizzle(connection);
-
+  await prisma.$executeRawUnsafe(`
+        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'resources') 
+        BEGIN
+          CREATE TABLE resources (
+            id VARCHAR(21) PRIMARY KEY DEFAULT dbo.nanoid(),
+            content NVARCHAR(4000) NOT NULL,
+            created_at DATETIME DEFAULT GETDATE(),
+            updated_at DATETIME DEFAULT GETDATE()
+          )
+        END
+      `);
 
   console.log("⏳ Running migrations...");
 
   const start = Date.now();
-
-  await migrate(db, { migrationsFolder: 'lib/db/migrations' });
 
   const end = Date.now();
 
