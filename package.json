@@ -10,7 +10,7 @@
     "db:migrate": "tsx lib/db/migrate.ts"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.2.5",
+    "@ai-sdk/groq": "^1.1.14",
     "@ai-sdk/react": "^1.1.23",
     "@prisma/client": "6.2.1",
     "@radix-ui/react-avatar": "^1.1.0",
@@ -24,7 +24,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.396.0",
     "nanoid": "^5.0.7",
-    "next": "15.1.7",
+    "next": "15.2.2",
     "next-themes": "^0.3.0",
     "pg": "^8.13.1",
     "react": "^19.0.0",
@@ -39,12 +39,13 @@
     "@types/pg": "^8.11.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
     "dotenv": "^16.4.5",
     "eslint": "^9",
-    "eslint-config-next": "15.1.6",
+    "eslint-config-next": "15.2.2",
     "postcss": "^8",
     "prisma": "^6.2.1",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^4",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
